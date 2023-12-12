@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <title>Family-Chat</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <!-- <div>
+        <div>
+            メールアドレス：<input id="emailAddress" type="email" required/>
+        </div>
+        <div>
+            パスワード：<input id="password" type="password" required/>
+        </div>
+        <button id="login">ログイン</button>
+        <button id="register">新規登録</button>
+    </div> -->
+
+    <div class="container">
+        <div id="chatHeader">Family-Chat</div>
+        <div class="chatBox">
+            <div class="chatArea">
+                <div id="output"></div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div id="unameText">
+            <div>
+                <input type="text" id="uname">
+            </div>
+            <div class="messageArea">
+                <textarea name="" id="text"></textarea>
+                <dig id="send"><img src="imgs/send.png" alt="" id="sendIcon"></dig>
+            </div>
+        </div>
+    </footer>
+    <!-- コンテンツ表示画面 -->
+
+
+    <!--/ コンテンツ表示画面 -->
+
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- JQuery -->
+
+
+    <!--** 以下Firebase **-->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+        import { getDatabase, ref, push, set, onChildAdded, remove, onChildRemoved }
+            from "https://cdnjs.cloudflare.com/ajax/libs/firebase/10.7.1/firebase-database.js";
+        // ユーザーアカウントの登録・ログイン（Firebase Authentication）
+        // import { getAuth, createUserWithEmailAndPassword }
+        //     from "firebase/suth";
+        // import { getAuth, signInWithEmailAndPassword }
+        //     from "https://www.gstatic.com/firebasejs/ui/10.7.1/firebase-ui-auth.js";
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBLaMK-GlFo7KMSWOnY5YPpHftOAaPaHtQ",
+            authDomain: "fir-test-9845e.firebaseapp.com",
+            projectId: "fir-test-9845e",
+            storageBucket: "fir-test-9845e.appspot.com",
+            messagingSenderId: "648307675578",
+            appId: "1:648307675578:web:770ad2e1f5ff0ab10f8d83"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        // データベースの参照を作成
+        const db = getDatabase(app);
+        const dbRef = ref( db , "chat" );
+        
+        // ユーザー(本人)設定
+        let USER = "YUKI"
+
+        // $("#register").on("click",function(){
+        let email = $("#emailAddress").val();
+        let password = $("#password").val();
+        // let auth = getAuth();
+        // let userCredential = await createUserWithEmailAndPassword(auth, email ,password)
+        
+        // const auth = getAuth();
+        // createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
+        //     const user = userCredential.user;
+        // })
+        // .catch((error) => {
+        //     const errorCode = error.code;
+        //     const errorMessage = error.message;
+        // });
+
+        // console.log(email);
+        // console.log(password);
+            
+            // console.log(auth);
+            // firebase.auth().createUserWithEmailAndPassword(email,password).catch(function(error){
+            //     let errorCode = error.code;
+            //     if (errorCode == "auth/invalid-email"){
+            //         aleat("メールアドレスの形式が正しくありません");
+            //     }
+            // }) .then(function(user){
+            //     console.log(user);
+                
+            // });
+        // });
+
+        $("#send").on("click",function() {
+            // textが空の場合は処理をやめる
+            // .trim()を設定することで見えない空白を削除し、改行されていてもtextが空であれば送信不可になる
+            let textCheck = $("#text").val().trim()
+            console.log(textCheck);
+            if ( textCheck == ""){
+                return;
+            }
+            // unameによってアイコンを変える（本来アカウント判定か。PHP？💡）
+            let userIcon = "";
+            if ( $("#uname").val() == "恵子" ){
+                userIcon = `<img src = "imgs/iconBearV2.png" class="userIcon">`
+                console.log(userIcon);
+            } else if ( $("#uname").val() !== "恵子" ){
+                userIcon = `<img src = "imgs/iconV2.png" class="userIcon">`
+                console.log(userIcon);
+            }
+            // 送信時間のログを取る
+            let now = new Date();
+            let year = now.getFullYear();
+            let month = now.getMonth() + 1 ;
+            let date = now.getDate();
+            // 曜日を配列使って取得する
+            let dayOfWeek = now.getDay();
+            let dayOfWeekArry = ["(日)","(月)","(火)","(水)","(木)","(金)","(土)"][dayOfWeek];
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            // minutesが一桁の場合、頭に"0"を付ける
+            minutes = String(minutes).padStart(2,"0");
+            console.log(minutes);
+            let nowCV = year + "/" + month + "/" + date + dayOfWeekArry + " " + hours + ":" + minutes;
+            console.log(nowCV);
+            const msg = {
+                nowCV,
+                userIcon,
+                uname: $("#uname").val(),
+                text: $("#text").val(),
+            };
+            // console.log(msg);
+            const newPostRef = push(dbRef);
+            set(newPostRef, msg);
+            // 以下でメッセージ送信したときにchatAreaのスクロール位置を最下部にする
+            $(".chatArea").scrollTop($(".chatArea")[0].scrollHeight);
+            // メッセージ送信したらtextを空にする
+            $("#text").val("");
+            // メッセージ送信した後はtextをFocusする。
+            $("#text").focus();
+        })
+    
+    let iconBear = `<img src = imgs/iconBearV2.png class="userIcon">`
+    
+    // dbRef（＝"chat"）に入っているデータのid(value)をキーに情報を取得している
+    onChildAdded(dbRef, function (data) {
+        console.log(data);
+        console.log(data.val());
+        const msg = data.val(); //val()によりkeyの中身のデータが取り出せる。
+        const key = data.key;
+        console.log(key);
+        if( msg.uname == USER ) {
+            let h = `<div id="${key}" class="message00">`
+            h += `<p id="dataUname00">`
+            h += msg.uname;
+            h += `</p><p id="dataTextNowCV00"><span id="dataIcon">`
+            // h += msg.userIcon;
+            h += `</span><span id="dataNowCV00">`
+            h += msg.nowCV
+            h += `</span><span id="dataText00">`
+            h += msg.text
+            h += `</span></p></div>`
+            $("#output").append(h); // #output の最後に追加
+            // 以下でリロードしたときにchatAreaのスクロール位置を最下部にする
+            // アイコンを差し込んだことでスクロール位置がずれてしまう💡
+            $(".chatArea").scrollTop($(".chatArea")[0].scrollHeight)
+        } else if ( msg.uname !== USER ) {
+            let h = `<div id="${key}" class="message">`
+            h += `<p id="dataUname">`
+            h += msg.uname;
+            h += `</p><p id="dataTextNowCV"><span id="dataIcon">`
+            h += msg.userIcon;
+            h += `</span><span id="dataText">`
+            h += msg.text
+            h += `</span><span id="dataNowCV">`
+            h += msg.nowCV
+            h += `</span></p></div>`
+            $("#output").append(h); // #output の最後に追加
+            // 以下でリロードしたときにchatAreaのスクロール位置を最下部にする
+            // アイコンを差し込んだことでスクロール位置がずれてしまう💡
+            $(".chatArea").scrollTop($(".chatArea")[0].scrollHeight)
+        }
+    });
+
+    // メッセージをクリックしたら削除する
+    $("#output").on("click", ".message" ,function(){
+        // alert("クリックできたね");
+        const clickMsg = $(this).attr("id");
+        console.log(clickMsg);
+        const chatRef = ref (db, "chat/" + clickMsg );
+        remove(chatRef);
+        $("#removeMsg").remove();
+    });
+    $("#output").on("click", ".message00" ,function(){
+        // alert("クリックできたね");
+        const clickMsg = $(this).attr("id");
+        console.log(clickMsg);
+        const chatRef = ref (db, "chat/" + clickMsg );
+        remove(chatRef);
+        $("#removeMsg").remove();
+    });
+
+    // メッセージをクリックしたらFirebaseのデータも削除する
+    onChildRemoved(dbRef, function(data) {
+        console.log(data.val());
+        const removeMsg = data.key;
+        console.log(removeMsg)
+        $("#"+ removeMsg).remove();
+    })
+
+    // Enterキー(which===13)を押すとメッセージ送信できる
+    // keyupだとIME確定時のEnterで送信されてしまうため、keydownとする
+    $("#text").on("keydown",function(event){
+        // && !e.shihtKeyを設定することで Shiftキー＋Enterキー の場合は改行
+        if (event.which === 13 && !event.shiftKey){
+            $("#send").click()
+        }
+    })
+
+    // textが空の場合はEnterキー押しても改行できないようにする。
+    // 但し、Shiftキー＋Enterキー を押せば改行はできる。
+    $("#text").on("keydown",function(event){
+        if ($("#text").val()=="" && event.which === 13 && !event.shiftKey){    
+            event.preventDefault();
+        }
+    })
+
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,176 @@
+/* チャット全体の幅を決める */
+body {
+    font-size: 62.5%;
+    height: 100%;
+}
+#chatHeader {
+    width: 98%;
+    font-size: 2rem;
+    font-weight: bold;
+    font-family: noteworthy;
+    color: #ffffff;
+    /* font-family: Chalkduster; */
+    background-color: #477c4a;
+    background-color: rgb(78, 87, 128);
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-left: 2%;
+    margin-bottom: -1px;
+    /* position: fixed; */
+}
+.chatBox {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.chatArea {
+    height: 76vh;
+    background-color: #30445f;
+    background-color: #8DB4E5;
+    background: linear-gradient(180deg,rgb(78, 87, 128),rgb(220, 158, 168));
+    /* この中でスクロールさせる */
+    overflow: scroll;
+    font-size: 1.4rem;
+}
+#unameText {
+    position: relative
+}
+#uname {
+    width:24%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1.4rem;
+    font-family: monospace;
+    position: sticky;
+    margin-top: 1%;
+}
+/* flex設定によりtextと送信ボタンを横並びに */
+.messageArea {
+    width: 98%;
+    display: flex;
+    position: sticky;
+    margin-top: 2px;
+    margin-bottom: 10px;
+}
+#text {
+    width: 92%;
+    font-size: 1.2rem;
+}
+textarea {
+    /* 以下でtextareaのサイズ調整を不可にする */
+    resize: none;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    /* 以下でボーダー込みのboxサイズにする */
+    box-sizing: border-box;
+    /* font-size: 1.4rem; */
+}
+#send {
+    width: 16%;
+    /* 以下2行のmargin調整で紙飛行機の余白を消しこむ */
+    margin-left: -4%;
+    margin-right: -4%;
+    text-align: center;
+    /* position: fixed; */
+    position: relative;
+}
+#sendIcon {
+    width: 50%;
+    /* 紙飛行機の位置を整える */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+/* OUTPUTのCSS（本人以外） */
+#dataUname {
+    display: inline-block;
+    font-size: 0.8rem;
+    margin: 0 0 0 4%;
+}
+#dataTextNowCV {
+    margin: 1px 0 20px 4%;
+}
+.userIcon {
+    width: 6%;
+}
+#dataIcon {
+    /* display: flex; */
+    /* text-align: center; */
+}
+#dataText {
+    /* display: inline-block; */
+    background: #edf1ee;
+    margin: 0 0 0 2%;
+    padding: 5px 2% 10px 2%;
+    border-radius: 18px;
+    font-size: 1.2rem;
+    position: relative;
+    /* textareaの改行を反映させたまま表示する */
+    /* この改行反映によってtext枠が変になるし時間もズレる💡 */
+    white-space: pre-wrap;
+}
+#dataText::before{
+    /* display: inline-block; */
+    /* 以下、吹き出し用の三角形を作る */
+    content: "";
+    border: 0.6rem solid transparent;
+    border-right: 18px solid #edf1ee;
+    position: absolute;
+    /* 吹き出し三角形の位置を揃える */
+    top: -10%;
+    left: -18px;
+    /* 吹き出し三角形を回転させる */
+    transform: rotate(30deg);
+}
+#dataNowCV {
+    display: inline-block;
+    margin-left: 1%;
+    color: #ddd;
+    font-size: 0.8rem;
+}
+
+/* OUTPUTのCSS（本人） */
+.message00 {
+    text-align: right;
+}
+#dataUname00 {
+    display: inline-block;
+    font-size: 0.8rem;
+    margin: 0 4% 0 0;
+}
+#dataTextNowCV00 {
+    margin: 1px 0 20px 4%;
+}
+#dataText00 {
+    /* display: inline-block; */
+    background: #76d689;
+    margin: 0 2% 0 2%;
+    padding: 5px 2% 10px 2%;
+    border-radius: 18px;
+    font-size: 1.2rem;
+    position: relative;
+    /* textareaの改行を反映させたまま表示する */
+    /* この改行反映によってtext枠が変になるし時間もズレる💡 */
+    /* white-space: pre-wrap; */
+}
+#dataText00::before{
+    /* display: inline-block; */
+    /* 以下、吹き出し用の三角形を作る */
+    content: "";
+    border: 0.6rem solid transparent;
+    border-right: 18px solid #76d689;
+    position: absolute;
+    /* 吹き出し三角形の位置を揃える */
+    top: -10%;
+    right: -5px;
+    /* 吹き出し三角形を回転させる */
+    transform: rotate(30deg);
+}
+#dataNowCV00 {
+    display: inline-block;
+    margin-left: 1%;
+    color: #ddd;
+    font-size: 0.8rem;
+}
